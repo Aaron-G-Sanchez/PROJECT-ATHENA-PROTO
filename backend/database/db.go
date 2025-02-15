@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 
@@ -37,4 +38,5 @@ func main() {
 	if err = db.Ping(); err != nil {
 		log.Fatal(err)
 	}
+	fmt.Println("Successfully pinged db!")
 }
