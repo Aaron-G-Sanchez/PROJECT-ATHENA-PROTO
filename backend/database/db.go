@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/aaron-g-sanchez/PROTOTYPE/PROJECT-ATHENA-PROTO/backend/database/models"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -13,7 +14,9 @@ import (
 /* USER table
 - ID
 - Name
-- Username
+- User_id
+- created_at
+- Updated_at
 */
 
 func loadEnv() string {
@@ -32,11 +35,30 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	defer db.Close()
 
-	if err = db.Ping(); err != nil {
+	if err := db.Ping(); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Successfully pinged db!")
+
+	data := []models.User{}
+
+	rows, err := db.Query(`SELECT name, user_id FROM users`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	var name string
+	var userId string
+
+	for rows.Next() {
+		err := rows.Scan(&name, &userId)
+		if err != nil {
+			log.Fatal(err)
+		}
+		data = append(data, models.User{name, userId})
+	}
+
+	fmt.Println(data)
 }
