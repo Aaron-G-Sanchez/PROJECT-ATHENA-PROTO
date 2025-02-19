@@ -11,14 +11,6 @@ import (
 	_ "github.com/lib/pq"
 )
 
-/* USER table
-- ID
-- Name
-- User_id
-- created_at
-- Updated_at
-*/
-
 func loadEnv() string {
 	err := godotenv.Load()
 	if err != nil {
@@ -43,21 +35,22 @@ func main() {
 
 	data := []models.User{}
 
-	rows, err := db.Query(`SELECT name, user_id FROM users`)
+	rows, err := db.Query(`SELECT id, name, user_id FROM users`)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer rows.Close()
 
+	var id string
 	var name string
 	var userId string
 
 	for rows.Next() {
-		err := rows.Scan(&name, &userId)
+		err := rows.Scan(&id, &name, &userId)
 		if err != nil {
 			log.Fatal(err)
 		}
-		data = append(data, models.User{name, userId})
+		data = append(data, models.User{id, name, userId})
 	}
 
 	fmt.Println(data)
